@@ -75,19 +75,7 @@ public class CarMovementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (AI_TurnDirTimerSeconds > 0)
-        {
-            AI_TurnDirTimerSeconds -= Time.deltaTime;
-        }
-        else
-        {
-            if (AI_TurnDir == 1)
-                AI_TurnDir = -1;
-            else
-                AI_TurnDir = 1;
 
-            AI_TurnDirTimerSeconds = Random.Range(5, 10);
-        }
 
         // Debug Display
         GetComponent<MeshRenderer>().enabled = rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode();
@@ -122,9 +110,17 @@ public class CarMovementScript : MonoBehaviour
         {
             ////////////
             Vector3 fwd = transform.TransformDirection(Vector3.forward);
-            Vector3 left = transform.TransformDirection(Vector3.left);
+            Vector3 left = transform.TransformDirection(Vector3.left) * .5f;
+
             // Look Forward
-            if (Physics.Raycast(transform.position+left, fwd, 2) && Physics.Raycast(transform.position-left, fwd, 2))
+            if (rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode())
+            {
+                Debug.DrawRay(transform.position + left * 1.5f, fwd, Color.blue, 0);
+                Debug.DrawRay(transform.position - left * 1.5f, fwd, Color.blue, 0);
+                Debug.DrawRay(transform.position, fwd * 2f, Color.blue, 0);
+            }
+
+            if (Physics.Raycast(transform.position + left * 1.5f, fwd, 2) || Physics.Raycast(transform.position - left * 1.5f, fwd, 2) || Physics.Raycast(transform.position, fwd * 2f, 2))
             {
                 Debug.Log("There is something in front of the object!");
                 drive_rotate(MotorSpeed * AI_TurnDir);
@@ -135,13 +131,36 @@ public class CarMovementScript : MonoBehaviour
                 drive_forward(MotorSpeed);
 
                 Vector3 down = transform.TransformDirection(Vector3.down);
-                if (Physics.Raycast(transform.position + fwd * 2 - (down * .5f) + left, down) && Physics.Raycast(transform.position + fwd * 2 - (down * .5f) - left, down))
-                {
 
+                if (rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode())
+                {
+                    Debug.DrawRay(transform.position + fwd * .5f - (down * .5f) + left * 2f, down, Color.red, 0);
+                    Debug.DrawRay(transform.position + fwd * .5f - (down * .5f) - left * 2f, down, Color.red, 0);
+                    Debug.DrawRay(transform.position + fwd * 2 - (down * .5f) - left * 0f, down, Color.red, 0);
+                }
+
+                if (Physics.Raycast(transform.position + fwd * .5f - (down * .5f) + left, down) && Physics.Raycast(transform.position + fwd * .5f - (down * .5f) - left, down) && Physics.Raycast(transform.position + fwd * 2 - (down * .5f), down))
+                {
+                    Debug.Log("Driving Safely");
+
+                    if (AI_TurnDirTimerSeconds > 0)
+                    {
+                        AI_TurnDirTimerSeconds -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        if (AI_TurnDir == 1)
+                            AI_TurnDir = -1;
+                        else
+                            AI_TurnDir = 1;
+
+                        AI_TurnDirTimerSeconds = Random.Range(10, 15);
+                    }
                 }
                 else
                 {
                     Debug.Log("There's no floor here!!!");
+                    drive_stop();
                     drive_rotate(MotorSpeed * AI_TurnDir);
                 }
             }

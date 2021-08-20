@@ -5871,6 +5871,7 @@ MonoBehaviour:
   debug_mode: 0
   CozmoCam: {fileID: 404719054}
   TextModeDisplay: {fileID: 1266781581}
+  CozmoBody: {fileID: 1890828180}
   DefaultRoboMode: 1
 --- !u!1001 &328847535
 PrefabInstance:
@@ -6849,13 +6850,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 416212862}
-  m_LocalRotation: {x: -0.27998835, y: -0.33249682, z: 0.5800878, w: 0.68887633}
-  m_LocalPosition: {x: 16.662872, y: 11.536467, z: -13.636202}
+  m_LocalRotation: {x: -0.2933865, y: -0.32073662, z: 0.60784644, w: 0.6645112}
+  m_LocalPosition: {x: 16.717, y: 11.528, z: -13.567}
   m_LocalScale: {x: 0.20000006, y: 0.19999997, z: 0.20000002}
   m_Children: []
   m_Father: {fileID: 479364427}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -51.53, z: 80.2}
+  m_LocalEulerAnglesHint: {x: 0, y: -51.53, z: 84.9}
 --- !u!1001 &426768294
 PrefabInstance:
   m_ObjectHideFlags: 0
