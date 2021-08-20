@@ -51,35 +51,38 @@ public class CarMovementScript : MonoBehaviour
         // Debug Display
         GetComponent<MeshRenderer>().enabled = rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode();
 
-        // Movement
-        float h = sign(playerControls.Player.Move.ReadValue<Vector2>().x);
-        float v = sign(playerControls.Player.Move.ReadValue<Vector2>().y);
-
-        if (h != 0)
+        if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.Explorer)
         {
-            FL.motorTorque = h * MotorSpeed * 1;
-            FR.motorTorque = h * MotorSpeed * -1;
-            BL.motorTorque = h * MotorSpeed * 1;
-            BR.motorTorque = h * MotorSpeed * -1;
-        }
-        else if (v != 0)
-        {
-            FL.motorTorque = v * MotorSpeed;
-            FR.motorTorque = v * MotorSpeed;
-            BL.motorTorque = v * MotorSpeed;
-            BR.motorTorque = v * MotorSpeed;
-        }
+            // Movement
+            float h = sign(playerControls.Player.Move.ReadValue<Vector2>().x);
+            float v = sign(playerControls.Player.Move.ReadValue<Vector2>().y);
 
-        if (h == 0 && v == 0)
-        {
-            FL.motorTorque = 0;
-            FR.motorTorque = 0;
-            BL.motorTorque = 0;
-            BR.motorTorque = 0;
-        }
+            if (h != 0)
+            {
+                FL.motorTorque = h * MotorSpeed * 1;
+                FR.motorTorque = h * MotorSpeed * -1;
+                BL.motorTorque = h * MotorSpeed * 1;
+                BR.motorTorque = h * MotorSpeed * -1;
+            }
+            else if (v != 0)
+            {
+                FL.motorTorque = v * MotorSpeed;
+                FR.motorTorque = v * MotorSpeed;
+                BL.motorTorque = v * MotorSpeed;
+                BR.motorTorque = v * MotorSpeed;
+            }
 
-        // Debug
-        if (rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode())
-            Debug.Log(h.ToString() + ", " + v.ToString());
+            if (h == 0 && v == 0)
+            {
+                FL.motorTorque = 0;
+                FR.motorTorque = 0;
+                BL.motorTorque = 0;
+                BR.motorTorque = 0;
+            }
+
+            // Debug
+            if (rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode())
+                Debug.Log(h.ToString() + ", " + v.ToString());
+        }
     }
 }
