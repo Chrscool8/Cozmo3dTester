@@ -62,15 +62,12 @@ public class CarMovementScript : MonoBehaviour
             BL.motorTorque = h * MotorSpeed * 1;
             BR.motorTorque = h * MotorSpeed * -1;
         }
-        else
+        else if (v != 0)
         {
-            if (v != 0)
-            {
-                FL.motorTorque = v * MotorSpeed;
-                FR.motorTorque = v * MotorSpeed;
-                BL.motorTorque = v * MotorSpeed;
-                BR.motorTorque = v * MotorSpeed;
-            }
+            FL.motorTorque = v * MotorSpeed;
+            FR.motorTorque = v * MotorSpeed;
+            BL.motorTorque = v * MotorSpeed;
+            BR.motorTorque = v * MotorSpeed;
         }
 
         if (h == 0 && v == 0)
@@ -81,6 +78,8 @@ public class CarMovementScript : MonoBehaviour
             BR.motorTorque = 0;
         }
 
-        Debug.Log(h.ToString() + ", " + v.ToString());
+        // Debug
+        if (rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode())
+            Debug.Log(h.ToString() + ", " + v.ToString());
     }
 }
