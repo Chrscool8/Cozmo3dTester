@@ -25,4 +25,9 @@ public class UIButtonController : MonoBehaviour
         modedisplaytext.GetComponent<UnityEngine.UI.Text>().text = new_mode;
         Debug.Log(new_mode);
     }
+
+    public void ResetCozmo()
+    {
+        CozmoParent.GetComponent<CozmoBotGeneral>().ResetCozmo();
+    }
 }

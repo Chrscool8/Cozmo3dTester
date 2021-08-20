@@ -34,15 +34,20 @@ public class CozmoBotGeneral : MonoBehaviour
         Debug.Log(RoboMode);
     }
 
+    internal void ResetCozmo()
+    {
+        CozmoBody.transform.position = new Vector3(0, 1, 0);
+        CozmoBody.transform.rotation = new Quaternion(0, 0, 0, 0);
+        CozmoBody.transform.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        CozmoBody.transform.GetComponent<Rigidbody>().angularVelocity = new Vector3(0, 0, 0);
+    }
+
     // Update is called once per frame
     void Update()
     {
         if (CozmoBody.transform.position.y < -10)
         {
-            CozmoBody.transform.position = new Vector3(0, 1, 0);
-            CozmoBody.transform.rotation = new Quaternion(0, 0, 0, 0);
-            CozmoBody.transform.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
-            CozmoBody.transform.GetComponent<Rigidbody>().angularVelocity = new Vector3(0, 0, 0);
+            ResetCozmo();
         }
     }
 
