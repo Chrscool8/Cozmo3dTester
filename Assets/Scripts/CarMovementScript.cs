@@ -14,6 +14,9 @@ public class CarMovementScript : MonoBehaviour
     public WheelCollider BL;
     public WheelCollider BR;
 
+    private int AI_TurnDir = 1;
+    private float AI_TurnDirTimerSeconds = 1;
+
     private void Awake()
     {
         playerControls = new PlayerControls();
@@ -45,9 +48,47 @@ public class CarMovementScript : MonoBehaviour
             return 1;
     }
 
+    void drive_stop()
+    {
+        FL.motorTorque = 0;
+        FR.motorTorque = 0;
+        BL.motorTorque = 0;
+        BR.motorTorque = 0;
+    }
+
+    void drive_forward(float speed)
+    {
+        FL.motorTorque = speed;
+        FR.motorTorque = speed;
+        BL.motorTorque = speed;
+        BR.motorTorque = speed;
+    }
+
+    void drive_rotate(float speed)
+    {
+        FL.motorTorque = speed;
+        FR.motorTorque = -speed;
+        BL.motorTorque = speed;
+        BR.motorTorque = -speed;
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if (AI_TurnDirTimerSeconds > 0)
+        {
+            AI_TurnDirTimerSeconds -= Time.deltaTime;
+        }
+        else
+        {
+            if (AI_TurnDir == 1)
+                AI_TurnDir = -1;
+            else
+                AI_TurnDir = 1;
+
+            AI_TurnDirTimerSeconds = Random.Range(5, 10);
+        }
+
         // Debug Display
         GetComponent<MeshRenderer>().enabled = rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode();
 
@@ -59,30 +100,58 @@ public class CarMovementScript : MonoBehaviour
 
             if (h != 0)
             {
-                FL.motorTorque = h * MotorSpeed * 1;
-                FR.motorTorque = h * MotorSpeed * -1;
-                BL.motorTorque = h * MotorSpeed * 1;
-                BR.motorTorque = h * MotorSpeed * -1;
+                drive_rotate(MotorSpeed * h);
             }
             else if (v != 0)
             {
-                FL.motorTorque = v * MotorSpeed;
-                FR.motorTorque = v * MotorSpeed;
-                BL.motorTorque = v * MotorSpeed;
-                BR.motorTorque = v * MotorSpeed;
+                drive_forward(v * MotorSpeed);
             }
 
             if (h == 0 && v == 0)
             {
-                FL.motorTorque = 0;
-                FR.motorTorque = 0;
-                BL.motorTorque = 0;
-                BR.motorTorque = 0;
+                drive_stop();
             }
 
             // Debug
             if (rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode())
                 Debug.Log(h.ToString() + ", " + v.ToString());
+
+
+        }
+        else if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.WanderAI)
+        {
+            ////////////
+            Vector3 fwd = transform.TransformDirection(Vector3.forward);
+            Vector3 left = transform.TransformDirection(Vector3.left);
+            // Look Forward
+            if (Physics.Raycast(transform.position+left, fwd, 2) && Physics.Raycast(transform.position-left, fwd, 2))
+            {
+                Debug.Log("There is something in front of the object!");
+                drive_rotate(MotorSpeed * AI_TurnDir);
+            }
+            else
+            {
+                Debug.Log("Going Forward!");
+                drive_forward(MotorSpeed);
+
+                Vector3 down = transform.TransformDirection(Vector3.down);
+                if (Physics.Raycast(transform.position + fwd * 2 - (down * .5f) + left, down) && Physics.Raycast(transform.position + fwd * 2 - (down * .5f) - left, down))
+                {
+
+                }
+                else
+                {
+                    Debug.Log("There's no floor here!!!");
+                    drive_rotate(MotorSpeed * AI_TurnDir);
+                }
+            }
+
+
+
+
+
+
+
         }
     }
 }
