@@ -4,20 +4,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-    [Serializable]
-    public enum RoboModeOptions
-    {
-        None = 0,
-        Explorer = 1,
-        WanderAI = 2,
-        NumRoboModes
-    }
+[Serializable]
+public enum RoboModeOptions
+{
+    None = 0,
+    Explorer = 1,
+    WanderAI = 2,
+    NumRoboModes
+}
 
 public class CozmoBotGeneral : MonoBehaviour
 {
     [SerializeField] private bool debug_mode;
     [SerializeField] private Camera CozmoCam;
     [SerializeField] private GameObject TextModeDisplay;
+    [SerializeField] private GameObject CozmoBody;
+
 
     public RoboModeOptions DefaultRoboMode;
     private int RoboMode;
@@ -35,7 +37,13 @@ public class CozmoBotGeneral : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (CozmoBody.transform.position.y < -10)
+        {
+            CozmoBody.transform.position = new Vector3(0, 1, 0);
+            CozmoBody.transform.rotation = new Quaternion(0, 0, 0, 0);
+            CozmoBody.transform.GetComponent<Rigidbody>().angularVelocity = new Vector3(0, 0, 0);
+            CozmoBody.transform.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        }
     }
 
     public int getRoboMode()
