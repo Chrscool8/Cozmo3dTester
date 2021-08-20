@@ -1,10 +1,12 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CozmoBotGeneral : MonoBehaviour
 {
-    public bool debug_mode;
+    [SerializeField] private bool debug_mode;
+    [SerializeField] private Camera CozmoCam;
 
     // Start is called before the first frame update
     void Start()
@@ -24,8 +26,19 @@ public class CozmoBotGeneral : MonoBehaviour
         return debug_mode;
     }
 
+    public void ToggleCozmoCam()
+    {
+        CozmoCam.gameObject.SetActive(!CozmoCam.isActiveAndEnabled);
+
+    }
+
     public bool GetDebugMode()
     {
         return debug_mode;
+    }
+
+    public void SetDebugMode(bool setting)
+    {
+        debug_mode = setting;
     }
 }
