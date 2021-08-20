@@ -41,8 +41,8 @@ public class CozmoBotGeneral : MonoBehaviour
         {
             CozmoBody.transform.position = new Vector3(0, 1, 0);
             CozmoBody.transform.rotation = new Quaternion(0, 0, 0, 0);
-            CozmoBody.transform.GetComponent<Rigidbody>().angularVelocity = new Vector3(0, 0, 0);
             CozmoBody.transform.GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+            CozmoBody.transform.GetComponent<Rigidbody>().angularVelocity = new Vector3(0, 0, 0);
         }
     }
 
