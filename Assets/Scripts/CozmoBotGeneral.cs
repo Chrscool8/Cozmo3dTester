@@ -20,7 +20,6 @@ public class CozmoBotGeneral : MonoBehaviour
     [SerializeField] private GameObject TextModeDisplay;
     [SerializeField] private GameObject CozmoBody;
 
-
     public RoboModeOptions DefaultRoboMode;
     private int RoboMode;
 

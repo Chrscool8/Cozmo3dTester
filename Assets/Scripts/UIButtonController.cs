@@ -6,7 +6,9 @@ using UnityEngine.UI;
 public class UIButtonController : MonoBehaviour
 {
     public GameObject CozmoParent;
+    public GameObject CameraObj;
     public GameObject modedisplaytext;
+    public GameObject modecameratext;
 
     public void ToggleDebugMode()
     {
@@ -23,6 +25,13 @@ public class UIButtonController : MonoBehaviour
     {
         string new_mode = CozmoParent.GetComponent<CozmoBotGeneral>().ToggleAIMode();
         modedisplaytext.GetComponent<UnityEngine.UI.Text>().text = new_mode;
+        Debug.Log(new_mode);
+    }
+
+    public void ToggleCameraMode()
+    {
+        string new_mode = CameraObj.GetComponent<CameraControl>().ToggleCameraMode();
+        modecameratext.GetComponent<UnityEngine.UI.Text>().text = new_mode;
         Debug.Log(new_mode);
     }
 
