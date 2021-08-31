@@ -24,6 +24,7 @@ public class CameraControl : MonoBehaviour
 
     [SerializeField] private GameObject CameraModeDisplay;
     [SerializeField] private GameObject FollowObj;
+    [SerializeField] private GameObject EyesCamera;
 
     public CameraModeOptions DefaultCameraMode;
     private int CameraMode;
@@ -80,6 +81,12 @@ public class CameraControl : MonoBehaviour
 
                 target_position = FollowObj.transform.position + (new Vector3(xx, yy, zz));
                 target_rotation = Quaternion.Euler(45, FollowObj.transform.eulerAngles.y, 0);
+                move_rate = 1f;
+                break;
+
+            case (int)CameraModeOptions.Eyes:
+                target_position = EyesCamera.transform.position;
+                target_rotation = EyesCamera.transform.rotation;
                 move_rate = 1f;
                 break;
         }
