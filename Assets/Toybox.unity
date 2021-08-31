@@ -8052,6 +8052,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
   m_PrefabInstance: {fileID: 2009469111}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &869204518
+GameObject:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 869204520}
+  - component: {fileID: 869204519}
+  m_Layer: 0
+  m_Name: StaticLightingSky
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &869204519
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 869204518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 441482e8936e35048a1dffac814e3ef8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Profile: {fileID: 0}
+  m_StaticLightingSkyUniqueID: 0
+--- !u!4 &869204520
+Transform:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 869204518}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &878589397 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8184889624500104747, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
@@ -10223,17 +10268,33 @@ PrefabInstance:
       value: eyes
       objectReference: {fileID: 0}
     - target: {fileID: -8184889624500104747, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8184889624500104747, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
       propertyPath: m_StaticEditorFlags
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -6743218803001650385, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
+      propertyPath: m_DynamicOccludee
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -6743218803001650385, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: abd424225081ac546a114cc681695e77, type: 2}
+    - target: {fileID: -6504015794860822919, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 93b47cf8da281a4429b9deb73ec2119c, type: 2}
     - target: {fileID: -6499601806659521962, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -4807031644167392406, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 922d52e859c253448b146b1e74691240, type: 2}
     - target: {fileID: -2730205280213295272, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
       propertyPath: m_Name
       value: face_treads
@@ -10242,10 +10303,18 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -2471620852180714183, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 7961d02f0de448d4f9d0a00691f16207, type: 2}
     - target: {fileID: -1784721629259375827, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
       propertyPath: m_LocalPosition.y
       value: -0.01
       objectReference: {fileID: 0}
+    - target: {fileID: -1757138776329784268, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 922d52e859c253448b146b1e74691240, type: 2}
     - target: {fileID: 919132149155446097, guid: e5a2d0fe322285442a4d7c17b1969a44, type: 3}
       propertyPath: m_Name
       value: 3DModel
