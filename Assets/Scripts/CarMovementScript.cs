@@ -83,7 +83,7 @@ public class CarMovementScript : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward) * 5f, out hit, 5))
         {
-            BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.y, true);
+            BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.z, true);
         }
 
         if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.Explorer)

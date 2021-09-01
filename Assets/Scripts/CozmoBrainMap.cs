@@ -10,7 +10,7 @@ public class CozmoBrainMap : MonoBehaviour
 
     static int width = 10;
     static int height = 10;
-    float density = 10;
+    float density = .5f;
     int offset_x = 64;
     int offset_y = 64;
 
@@ -30,17 +30,17 @@ public class CozmoBrainMap : MonoBehaviour
 
     public void MarkPosition(float x, float y, bool status)
     {
-        int new_x = (int)(x * density) + offset_x;
-        int new_y = (int)(y * density) + offset_y;
+        int new_x = (int)(x / density) + offset_x;
+        int new_y = (int)(y / density) + offset_y;
         Debug.Log("Mark " + new_x + ", " + new_y);
         if (new_x >= 0 && new_y >= 0 && new_x < mapimage.rect.width && new_y < mapimage.rect.height)
         {
-            int blot_size = 2;
+            int blot_size = 1;
             for (int i = 0; i < blot_size; i++)
             {
                 for (int j = 0; j < blot_size; j++)
                 {
-                    mapimage.texture.SetPixel((new_x + i) - (blot_size / 2), ((int)(mapimage.rect.height - new_y) + j) - (blot_size / 2), new Color(0, 0, 0));
+                    mapimage.texture.SetPixel((new_x + i) - (blot_size / 2), ((int)(new_y) + j) - (blot_size / 2), new Color(0, 0, 0));
                 }
             }
             mapimage.texture.Apply();

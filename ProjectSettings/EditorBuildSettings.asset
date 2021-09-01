@@ -6,7 +6,7 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Toybox.unity
+    path: Assets/Scenes/Toybox.unity
     guid: 1f491273f331b29409f5e29a154b7a3d
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: efe11f2ab2cc57647965c6a019c0414c, type: 2}
