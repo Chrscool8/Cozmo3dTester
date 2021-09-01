@@ -71,7 +71,7 @@ public class CameraControl : MonoBehaviour
             case (int)CameraModeOptions.Track:
                 target_position = FollowObj.transform.position + new Vector3(0, 3, -3);
                 target_rotation = start_rotation;
-                move_rate = .01f;
+                move_rate = .05f;
                 break;
 
             case (int)CameraModeOptions.Follow:
