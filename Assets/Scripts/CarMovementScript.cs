@@ -16,7 +16,7 @@ public class CarMovementScript : MonoBehaviour
     public WheelCollider BR;
 
     public int AI_TurnDir;
-    private float AI_TurnDirTimerSeconds;
+    public float AI_TurnDirTimerSeconds;
 
     private void Awake()
     {
@@ -36,7 +36,7 @@ public class CarMovementScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        AI_TurnDirTimerSeconds = Random.Range(5, 10);
+        AI_TurnDirTimerSeconds = Random.Range(8, 10);
     }
 
     int sign(float input)
@@ -73,19 +73,33 @@ public class CarMovementScript : MonoBehaviour
         BR.motorTorque = -speed;
     }
 
-    bool SenseRay(Vector3 from, Vector3 direction, int maxdis)
+    bool SenseRay(Vector3 from, Vector3 direction, int maxdis, bool inverted = false)
     {
         bool hit_something = false;
         if (Physics.Raycast(from, direction, maxdis))
             hit_something = true;
 
-        RaycastHit hit;
-        if (Physics.Raycast(from, direction, out hit, maxdis * 2))
+        if (!inverted)
         {
-            BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.z, true);
+            RaycastHit hit;
+            if (Physics.Raycast(from, direction, out hit, maxdis * 2))
+            {
+                BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.z, true);
+            }
+        }
+        else
+        {
+            RaycastHit hit;
+            if (!Physics.Raycast(from, direction, out hit, maxdis * 2))
+            {
+                BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(from.x, from.z, true);
+            }
         }
 
-        return hit_something;
+        if (inverted)
+            return !hit_something;
+        else
+            return hit_something;
     }
 
     // Update is called once per frame
@@ -96,7 +110,11 @@ public class CarMovementScript : MonoBehaviour
 
         SenseRay(transform.position, transform.TransformDirection(Vector3.forward) * 5f, 5);
 
-        if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.Explorer)
+        if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.None)
+        {
+            drive_stop();
+        }
+        else if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.Explorer)
         {
             // Movement
             float h = sign(playerControls.Player.Move.ReadValue<Vector2>().x);
@@ -125,84 +143,50 @@ public class CarMovementScript : MonoBehaviour
             ////////////
             Vector3 fwd = transform.TransformDirection(Vector3.forward);
             Vector3 left = transform.TransformDirection(Vector3.left) * .5f;
-
-            // Look Forward
-            if (rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode())
-            {
-                Debug.DrawRay(transform.position + left * 1.5f, fwd, Color.blue, 0);
-                Debug.DrawRay(transform.position - left * 1.5f, fwd, Color.blue, 0);
-                Debug.DrawRay(transform.position, fwd * 2f, Color.blue, 0);
-            }
+            Vector3 down = transform.TransformDirection(Vector3.down);
 
             bool a = SenseRay(transform.position, fwd * 2f, 2);
-            bool b = SenseRay(transform.position + left * 1.5f, fwd, 2);
-            bool c = SenseRay(transform.position - left * 1.5f, fwd, 2);
-            if (a || b || c)
+            bool b = SenseRay(transform.position + left * 1.25f, fwd, 2);
+            bool c = SenseRay(transform.position - left * 1.25f, fwd, 2);
+
+            bool d = SenseRay(transform.position + fwd * 1.85f - (down * .5f), down, 2, true);
+            bool e = SenseRay(transform.position + fwd * 1.25f - (down * .5f) + left, down, 2, true);
+            bool f = SenseRay(transform.position + fwd * 1.25f - (down * .5f) - left, down, 2, true);
+
+            bool front_occupied = a || d;
+            bool left_occupied = b || e;
+            bool right_occupied = c || f;
+
+            if (front_occupied || left_occupied || right_occupied)
             {
-                Debug.Log("There is something in front of the object!");
-                if (a)
-                {
-                    if (b && !c)
-                        drive_rotate(MotorSpeed);
-                    else if (c && !b)
-                        drive_rotate(-MotorSpeed);
-                    else
-                        drive_rotate(MotorSpeed * AI_TurnDir);
-                }
-                //    drive_rotate(MotorSpeed * AI_TurnDir);
-                else if (b && !c)
-                    drive_rotate(MotorSpeed);
-                else if (c && !b)
-                    drive_rotate(-MotorSpeed);
-                else
-                    drive_rotate(MotorSpeed * AI_TurnDir);
+                AI_TurnDirTimerSeconds -= Time.deltaTime;
             }
+
+            if (left_occupied && !right_occupied)
+                drive_rotate(MotorSpeed);
+            else if (!left_occupied && right_occupied)
+                drive_rotate(-MotorSpeed);
+            else if (front_occupied && left_occupied && right_occupied)
+            {
+                if (Random.value < .25f)
+                    drive_forward(-MotorSpeed * .5f);
+                else
+                    drive_rotate(MotorSpeed * AI_TurnDir * .5f);
+            }
+            else if (front_occupied)
+                drive_rotate(MotorSpeed * AI_TurnDir);
             else
             {
-                Debug.Log("Going Forward!");
                 drive_forward(MotorSpeed);
 
-                Vector3 down = transform.TransformDirection(Vector3.down);
-
-                if (rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode())
+                if (AI_TurnDirTimerSeconds < 0)
                 {
-                    Debug.DrawRay(transform.position + fwd * .5f - (down * .5f) + left * 2f, down, Color.red, 0);
-                    Debug.DrawRay(transform.position + fwd * .5f - (down * .5f) - left * 2f, down, Color.red, 0);
-                    Debug.DrawRay(transform.position + fwd * 2 - (down * .5f) - left * 0f, down, Color.red, 0);
-                }
-
-                bool d = Physics.Raycast(transform.position + fwd * 2 - (down * .5f), down, 2);
-                bool e = Physics.Raycast(transform.position + fwd * .75f - (down * .5f) + left, down, 2);
-                bool f = Physics.Raycast(transform.position + fwd * .75f - (down * .5f) - left, down, 2);
-
-                if (d && e && f)
-                {
-                    Debug.Log("Driving Safely");
-
-                    if (AI_TurnDirTimerSeconds > 0)
-                    {
-                        AI_TurnDirTimerSeconds -= Time.deltaTime;
-                    }
+                    if (Random.value < .5f)
+                        AI_TurnDir = -1;
                     else
-                    {
-                        if (Random.Range(0, 10) < 5)
-                            AI_TurnDir = -1;
-                        else
-                            AI_TurnDir = 1;
+                        AI_TurnDir = 1;
 
-                        AI_TurnDirTimerSeconds = Random.Range(10, 15);
-                    }
-                }
-                else
-                {
-                    Debug.Log("There's no floor here!!!");
-
-                    if (!e && f)
-                        drive_rotate(MotorSpeed);
-                    else if (!f && e)
-                        drive_rotate(-MotorSpeed);
-                    else
-                        drive_rotate(MotorSpeed * AI_TurnDir);
+                    AI_TurnDirTimerSeconds = Random.Range(6, 8);
                 }
             }
         }
