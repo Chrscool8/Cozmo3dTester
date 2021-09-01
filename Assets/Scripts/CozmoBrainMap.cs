@@ -8,8 +8,8 @@ public class CozmoBrainMap : MonoBehaviour
 {
     public Sprite mapimage;
 
-    static int width = 10;
-    static int height = 10;
+    //static int width = 10;
+    //static int height = 10;
     float density = .5f;
     int offset_x = 64;
     int offset_y = 64;
@@ -35,14 +35,20 @@ public class CozmoBrainMap : MonoBehaviour
         Debug.Log("Mark " + new_x + ", " + new_y);
         if (new_x >= 0 && new_y >= 0 && new_x < mapimage.rect.width && new_y < mapimage.rect.height)
         {
-            int blot_size = 1;
-            for (int i = 0; i < blot_size; i++)
+            int blot_size = 0;
+            if (blot_size > 0)
             {
-                for (int j = 0; j < blot_size; j++)
+                for (int i = 0; i < blot_size; i++)
                 {
-                    mapimage.texture.SetPixel((new_x + i) - (blot_size / 2), ((int)(new_y) + j) - (blot_size / 2), new Color(0, 0, 0));
+                    for (int j = 0; j < blot_size; j++)
+                    {
+                        mapimage.texture.SetPixel((new_x + i) - (blot_size / 2), ((int)(new_y) + j) - (blot_size / 2), new Color(0, 0, 0));
+                    }
                 }
             }
+            else
+                mapimage.texture.SetPixel(new_x, new_y, new Color(0, 0, 0));
+
             mapimage.texture.Apply();
         }
     }

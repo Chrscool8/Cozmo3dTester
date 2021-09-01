@@ -15,8 +15,8 @@ public class CarMovementScript : MonoBehaviour
     public WheelCollider BL;
     public WheelCollider BR;
 
-    private int AI_TurnDir = 1;
-    private float AI_TurnDirTimerSeconds = 1;
+    public int AI_TurnDir;
+    private float AI_TurnDirTimerSeconds;
 
     private void Awake()
     {
@@ -36,7 +36,7 @@ public class CarMovementScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        AI_TurnDirTimerSeconds = Random.Range(5, 10);
     }
 
     int sign(float input)
@@ -73,18 +73,28 @@ public class CarMovementScript : MonoBehaviour
         BR.motorTorque = -speed;
     }
 
+    bool SenseRay(Vector3 from, Vector3 direction, int maxdis)
+    {
+        bool hit_something = false;
+        if (Physics.Raycast(from, direction, maxdis))
+            hit_something = true;
+
+        RaycastHit hit;
+        if (Physics.Raycast(from, direction, out hit, maxdis * 2))
+        {
+            BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.z, true);
+        }
+
+        return hit_something;
+    }
+
     // Update is called once per frame
     void Update()
     {
         // Debug Display
         GetComponent<MeshRenderer>().enabled = rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode();
 
-
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward) * 5f, out hit, 5))
-        {
-            BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.z, true);
-        }
+        SenseRay(transform.position, transform.TransformDirection(Vector3.forward) * 5f, 5);
 
         if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.Explorer)
         {
@@ -124,10 +134,28 @@ public class CarMovementScript : MonoBehaviour
                 Debug.DrawRay(transform.position, fwd * 2f, Color.blue, 0);
             }
 
-            if (Physics.Raycast(transform.position, fwd * 2f, 2) || Physics.Raycast(transform.position + left * 1.5f, fwd, 2) || Physics.Raycast(transform.position - left * 1.5f, fwd, 2))
+            bool a = SenseRay(transform.position, fwd * 2f, 2);
+            bool b = SenseRay(transform.position + left * 1.5f, fwd, 2);
+            bool c = SenseRay(transform.position - left * 1.5f, fwd, 2);
+            if (a || b || c)
             {
                 Debug.Log("There is something in front of the object!");
-                drive_rotate(MotorSpeed * AI_TurnDir);
+                if (a)
+                {
+                    if (b && !c)
+                        drive_rotate(MotorSpeed);
+                    else if (c && !b)
+                        drive_rotate(-MotorSpeed);
+                    else
+                        drive_rotate(MotorSpeed * AI_TurnDir);
+                }
+                //    drive_rotate(MotorSpeed * AI_TurnDir);
+                else if (b && !c)
+                    drive_rotate(MotorSpeed);
+                else if (c && !b)
+                    drive_rotate(-MotorSpeed);
+                else
+                    drive_rotate(MotorSpeed * AI_TurnDir);
             }
             else
             {
@@ -143,7 +171,11 @@ public class CarMovementScript : MonoBehaviour
                     Debug.DrawRay(transform.position + fwd * 2 - (down * .5f) - left * 0f, down, Color.red, 0);
                 }
 
-                if (Physics.Raycast(transform.position + fwd * .5f - (down * .5f) + left, down) && Physics.Raycast(transform.position + fwd * .5f - (down * .5f) - left, down) && Physics.Raycast(transform.position + fwd * 2 - (down * .5f), down))
+                bool d = Physics.Raycast(transform.position + fwd * 2 - (down * .5f), down, 2);
+                bool e = Physics.Raycast(transform.position + fwd * .75f - (down * .5f) + left, down, 2);
+                bool f = Physics.Raycast(transform.position + fwd * .75f - (down * .5f) - left, down, 2);
+
+                if (d && e && f)
                 {
                     Debug.Log("Driving Safely");
 
@@ -153,7 +185,7 @@ public class CarMovementScript : MonoBehaviour
                     }
                     else
                     {
-                        if (AI_TurnDir == 1)
+                        if (Random.Range(0, 10) < 5)
                             AI_TurnDir = -1;
                         else
                             AI_TurnDir = 1;
@@ -164,17 +196,15 @@ public class CarMovementScript : MonoBehaviour
                 else
                 {
                     Debug.Log("There's no floor here!!!");
-                    drive_stop();
-                    drive_rotate(MotorSpeed * AI_TurnDir);
+
+                    if (!e && f)
+                        drive_rotate(MotorSpeed);
+                    else if (!f && e)
+                        drive_rotate(-MotorSpeed);
+                    else
+                        drive_rotate(MotorSpeed * AI_TurnDir);
                 }
             }
-
-
-
-
-
-
-
         }
     }
 }
