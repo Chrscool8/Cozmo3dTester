@@ -7,6 +7,7 @@ public class CarMovementScript : MonoBehaviour
 {
     private PlayerControls playerControls;
     public GameObject rootparent;
+    public GameObject BrainMap;
 
     public float MotorSpeed;
     public WheelCollider FL;
@@ -75,10 +76,15 @@ public class CarMovementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-
         // Debug Display
         GetComponent<MeshRenderer>().enabled = rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode();
+
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward) * 5f, out hit, 5))
+        {
+            BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.y, true);
+        }
 
         if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.Explorer)
         {
@@ -103,8 +109,6 @@ public class CarMovementScript : MonoBehaviour
             // Debug
             if (rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode())
                 Debug.Log(h.ToString() + ", " + v.ToString());
-
-
         }
         else if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.WanderAI)
         {
@@ -120,7 +124,7 @@ public class CarMovementScript : MonoBehaviour
                 Debug.DrawRay(transform.position, fwd * 2f, Color.blue, 0);
             }
 
-            if (Physics.Raycast(transform.position + left * 1.5f, fwd, 2) || Physics.Raycast(transform.position - left * 1.5f, fwd, 2) || Physics.Raycast(transform.position, fwd * 2f, 2))
+            if (Physics.Raycast(transform.position, fwd * 2f, 2) || Physics.Raycast(transform.position + left * 1.5f, fwd, 2) || Physics.Raycast(transform.position - left * 1.5f, fwd, 2))
             {
                 Debug.Log("There is something in front of the object!");
                 drive_rotate(MotorSpeed * AI_TurnDir);
