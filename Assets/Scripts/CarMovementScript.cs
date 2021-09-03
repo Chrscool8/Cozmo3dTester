@@ -84,7 +84,7 @@ public class CarMovementScript : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(from, direction, out hit, maxdis * 2))
             {
-                BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.z, true);
+                BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.z, true, 0, true);
             }
         }
         else
@@ -92,7 +92,7 @@ public class CarMovementScript : MonoBehaviour
             RaycastHit hit;
             if (!Physics.Raycast(from, direction, out hit, maxdis * 2))
             {
-                BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(from.x, from.z, true);
+                BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(from.x, from.z, true, 0, true);
             }
         }
 
@@ -109,6 +109,8 @@ public class CarMovementScript : MonoBehaviour
         GetComponent<MeshRenderer>().enabled = rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode();
 
         SenseRay(transform.position, transform.TransformDirection(Vector3.forward) * 5f, 5);
+
+        BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(transform.position.x, transform.position.z, false, 2);
 
         if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.None)
         {
