@@ -73,18 +73,35 @@ public class CarMovementScript : MonoBehaviour
         BR.motorTorque = -speed;
     }
 
+    bool DebugOn()
+    {
+        return (rootparent.GetComponent<CozmoBotGeneral>().GetDebugMode());
+    }
+
+    bool IsWall(Vector3 normal)
+    {
+        return (normal.y < .707);
+    }
+
     bool SenseRay(Vector3 from, Vector3 direction, int maxdis, bool inverted = false)
     {
         bool hit_something = false;
         if (Physics.Raycast(from, direction, maxdis))
             hit_something = true;
 
+        if (DebugOn())
+            Debug.DrawRay(from, direction * maxdis);
+
         if (!inverted)
         {
             RaycastHit hit;
             if (Physics.Raycast(from, direction, out hit, maxdis * 2))
             {
-                BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.z, true, 0, true);
+                if (IsWall(hit.normal))
+                    BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(hit.point.x, hit.point.z, true, 0, true);
+
+                if (DebugOn())
+                    Debug.DrawRay(hit.point, hit.normal);
             }
         }
         else
@@ -93,6 +110,9 @@ public class CarMovementScript : MonoBehaviour
             if (!Physics.Raycast(from, direction, out hit, maxdis * 2))
             {
                 BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(from.x, from.z, true, 0, true);
+
+                if (DebugOn())
+                    Debug.DrawRay(hit.point, hit.normal);
             }
         }
 
@@ -111,6 +131,18 @@ public class CarMovementScript : MonoBehaviour
         SenseRay(transform.position, transform.TransformDirection(Vector3.forward) * 5f, 5);
 
         BrainMap.GetComponent<CozmoBrainMap>().MarkPosition(transform.position.x, transform.position.z, false, 2);
+
+        Vector3 fwd = transform.TransformDirection(Vector3.forward);
+        Vector3 left = transform.TransformDirection(Vector3.left) * .5f;
+        Vector3 down = transform.TransformDirection(Vector3.down);
+
+        bool a = SenseRay(transform.position, fwd * 2f, 2);
+        bool b = SenseRay(transform.position + left * 1.25f, fwd, 2);
+        bool c = SenseRay(transform.position - left * 1.25f, fwd, 2);
+
+        bool d = SenseRay(transform.position + fwd * 1.85f - (down * .5f), down, 2, true);
+        bool e = SenseRay(transform.position + fwd * 1.25f - (down * .5f) + left, down, 2, true);
+        bool f = SenseRay(transform.position + fwd * 1.25f - (down * .5f) - left, down, 2, true);
 
         if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.None)
         {
@@ -142,19 +174,6 @@ public class CarMovementScript : MonoBehaviour
         }
         else if (rootparent.GetComponent<CozmoBotGeneral>().getRoboMode() == (int)RoboModeOptions.WanderAI)
         {
-            ////////////
-            Vector3 fwd = transform.TransformDirection(Vector3.forward);
-            Vector3 left = transform.TransformDirection(Vector3.left) * .5f;
-            Vector3 down = transform.TransformDirection(Vector3.down);
-
-            bool a = SenseRay(transform.position, fwd * 2f, 2);
-            bool b = SenseRay(transform.position + left * 1.25f, fwd, 2);
-            bool c = SenseRay(transform.position - left * 1.25f, fwd, 2);
-
-            bool d = SenseRay(transform.position + fwd * 1.85f - (down * .5f), down, 2, true);
-            bool e = SenseRay(transform.position + fwd * 1.25f - (down * .5f) + left, down, 2, true);
-            bool f = SenseRay(transform.position + fwd * 1.25f - (down * .5f) - left, down, 2, true);
-
             bool front_occupied = a || d;
             bool left_occupied = b || e;
             bool right_occupied = c || f;
@@ -165,9 +184,13 @@ public class CarMovementScript : MonoBehaviour
             }
 
             if (left_occupied && !right_occupied)
+            {
                 drive_rotate(MotorSpeed);
+            }
             else if (!left_occupied && right_occupied)
+            {
                 drive_rotate(-MotorSpeed);
+            }
             else if (front_occupied && left_occupied && right_occupied)
             {
                 if (Random.value < .25f)
@@ -176,7 +199,9 @@ public class CarMovementScript : MonoBehaviour
                     drive_rotate(MotorSpeed * AI_TurnDir * .5f);
             }
             else if (front_occupied)
+            {
                 drive_rotate(MotorSpeed * AI_TurnDir);
+            }
             else
             {
                 drive_forward(MotorSpeed);

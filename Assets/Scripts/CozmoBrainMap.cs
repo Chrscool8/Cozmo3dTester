@@ -52,7 +52,7 @@ public class CozmoBrainMap : MonoBehaviour
     {
         int new_x = (int)(x / density) + ((int)(mapimage.rect.width / 2)) + offset_x;
         int new_y = (int)(y / density) + ((int)(mapimage.rect.height / 2)) - offset_y;
-        Debug.Log("Mark " + new_x + ", " + new_y);
+        //Debug.Log("Mark " + new_x + ", " + new_y);
         if (new_x >= 0 && new_y >= 0 && new_x < mapimage.rect.width && new_y < mapimage.rect.height)
         {
             if (blot_size > 0)
