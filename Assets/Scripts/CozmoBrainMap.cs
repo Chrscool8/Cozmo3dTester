@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CozmoBrainMap : MonoBehaviour
 {
-    public Sprite mapimage;
+    public GameObject UIMapObject;
+
+    Sprite mapimage;
+    Texture2D maptex;
 
     Color Cell_Unknown = new Color(.5f, .5f, .5f, .5f);
     Color Cell_Blocked = new Color(0, 0, 0);
     Color Cell_Empty = new Color(1, 1, 1);
 
-    //static int width = 10;
-    //static int height = 10;
+    int map_width = 128;
+    int map_height = 128;
     float density = .5f;
     int offset_x = -20;
     int offset_y = 0;
@@ -20,6 +24,12 @@ public class CozmoBrainMap : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        mapimage = Sprite.Create(new Texture2D(map_width, map_height), new Rect(0, 0, map_width, map_height), new Vector2(0, 0));
+        mapimage.texture.filterMode = FilterMode.Point;
+        UIMapObject.GetComponent<Image>().sprite = mapimage;
+
+        /////
+
         Debug.Log("Rect " + mapimage.rect.width + ", " + mapimage.rect.height);
         for (int i = 0; i < mapimage.rect.width; i++)
         {
