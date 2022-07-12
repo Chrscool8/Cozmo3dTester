@@ -1,5 +1,5 @@
 # Cozmo's Toybox
-A little digital buddy to hang out with and watch based off of the wonderful [Cozmo robot](https://www.digitaldreamlabs.com/products/cozmo-pre-order). This is a small (for now) project used to demonstrate and hone my skills in Unity and Robotics AI while hopefully impressing a company I'd love to work for someday. All scripting code is my own design and only art assets are from outside libraries.
+A little digital buddy to hang out with and watch based off of the wonderful [Cozmo robot](https://www.digitaldreamlabs.com/products/cozmo-pre-order). This is a small (for now) project used to demonstrate and hone my skills in Unity and Robotics AI for a company whose products I'm personally a huge fan of. All scripting code is my own design and only art assets are from outside libraries.
 
 ![](https://i.imgur.com/am6uUM4.png)
  
